@@ -4,7 +4,6 @@
       :songs="songs"
       @sorted-songs="sortSongs"
     />
-
     <PaginatedTableBody :items="songs" />
   </table>
 </template>

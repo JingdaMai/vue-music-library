@@ -3,7 +3,13 @@
     <template v-for="(song, index) in paginatedItems">
       <tr :key="index">
         <td>{{ song.artist }}</td>
-        <td>{{ song.title }}</td>
+        <td>
+          <slot
+            name="addTitle"
+            :song="song"
+          />
+          {{ song.title }}
+        </td>
         <td>{{ song.album }}</td>
         <td>{{ song.genre }}</td>
       </tr>

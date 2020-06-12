@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import MusicIndex from '../components/MusicIndex';
-import PlayList from "../components/PlayList";
+import Playlist from "../components/Playlist";
 
 Vue.use(Router)
 
@@ -13,7 +13,7 @@ export default new Router({
             component: MusicIndex},
         {
             path: '/playlist/:slug',
-            component: PlayList
+            component: Playlist
         }
     ]
   }

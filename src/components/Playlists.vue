@@ -8,15 +8,36 @@
       Playlists
     </p>
 
-    <template v-for="playlist in playlists">
+    <template v-for="(playlist, index) in playlists">
       <p
         :key="playlist.slug"
-        class="panel-block"
+        class="panel-block playlist-item"
       >
-        <router-link :to="`playlist/${playlist.slug}`">
+        <router-link
+          :to="`playlist/${playlist.slug}`"
+          class="panel-block"
+        >
           <span class="panel-icon"><FontAwesomeIcon icon="book" /></span>
           {{ playlist.name }}
         </router-link>
+        
+        <template v-if="addingEnabled">
+          <a
+            v-if="!playlist.adding"
+            title="Add songs"
+            @click="addSongs(index)"
+          >
+            <FontAwesomeIcon icon="plus" />
+          </a>
+
+          <a
+            v-if="playlist.adding"
+            title="Disable adding songs"
+            @click="addSongs(index)"
+          >
+            <FontAwesomeIcon icon="check-square" />
+          </a>
+        </template>
       </p>
     </template>
 
@@ -47,6 +68,18 @@
 import localforage from 'localforage';
 
 export default {
+  props: {
+    addingEnabled: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
+    selectedPlaylistSlug: {
+      type: String,
+      default: '',
+      required: false
+    }
+  },
   data() {
     return {
       newPlaylistName: '',
@@ -59,6 +92,9 @@ export default {
         localforage.setItem('playlists', playlists);
       },
       deep: true
+    },
+    selectedPlaylistSlug(slug) {
+      this.$emit('set-playlist', this.playlists.find(pl => pl.slug === slug));
     }
   },
   created() {
@@ -66,6 +102,14 @@ export default {
       .then(data => {
         if (data !== null) {
           this.playlists = data;
+          this.playlists.forEach((pl, index) => {
+            this.playlists[index].adding = false;
+          })
+        }
+      })
+      .then(() => {
+        if (this.selectedPlaylistSlug) {
+          this.$emit('set-playlist', this.playlists.find(pl => pl.slug === this.selectedPlaylistSlug));
         }
       })
   },
@@ -74,10 +118,15 @@ export default {
       this.playlists.push({
         name: this.newPlaylistName,
         slug: this.slugify(this.newPlaylistName),
+        adding: false,
         songs: []
       });
 
       this.newPlaylistName = '';
+    },
+    addSongs(index) {
+      this.playlists[index].adding = !this.playlists[index].adding;
+      this.$emit('set-active-playlists', this.playlists.filter(pl => pl.adding===true));
     },
     slugify(name) {
       return name.toString().toLowerCase().trim()
@@ -91,5 +140,11 @@ export default {
 </script>
 
 <style scoped>
-
+nav {
+  position: fixed;
+  width: inherit;
+}
+.playlist-item {
+  justify-content: space-between;
+}
 </style>

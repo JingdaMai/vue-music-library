@@ -66,6 +66,11 @@ export default {
       sortDirection: 'asc'
     }
   },
+  watch: {
+    songs() {
+      this.sortSongs();
+    }
+  },
   methods: {
     changeSort(column) {
       if (this.sortBy === column && this.sortDirection === 'asc') {

@@ -1,7 +1,10 @@
 <template>
   <div class="columns">
     <div class="column is-3">
-      <Playlists />
+      <Playlists
+        addingEnabled
+        @set-active-playlists="setActivePlaylists"
+      />
     </div>
     <div class="column is-9">
       <table class="table is-fullwidth is-striped is-hoverable is-narrow">
@@ -9,7 +12,16 @@
           :songs="songs"
           @sort-songs="sortSongs"
         />
-        <PaginatedTableBody :items="sortedSongs" />
+        <PaginatedTableBody :items="sortedSongs">
+          <template 
+            v-if="activePlaylists.length > 0" 
+            v-slot:addTitle="songList"
+          >
+            <a @click="addSong(songList.song, $event.target)">
+              <FontAwesomeIcon icon="plus" />
+            </a>
+          </template>
+        </PaginatedTableBody>
       </table>
     </div>
   </div>
@@ -31,12 +43,23 @@ export default {
   data() {
     return {
       songs: MusicData,
-      sortedSongs: MusicData
+      sortedSongs: MusicData,
+      activePlaylists: []
     }
   },
   methods: {
     sortSongs(data) {
       this.sortedSongs = data;
+    },
+    setActivePlaylists(playlists) {
+      this.activePlaylists = playlists;
+    },
+    addSong(song, e) {
+      e.closest('tr').classList.add('flash');
+      setTimeout(() => e.closest('tr').classList.remove('flash'), 1000);
+      this.activePlaylists.forEach((pl, index) => {
+        this.activePlaylists[index].songs.push(song);
+      })
     }
   }
 }

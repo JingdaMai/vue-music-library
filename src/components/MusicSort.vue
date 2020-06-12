@@ -78,7 +78,7 @@ export default {
     },
     sortSongs() {
       if (this.sortBy === "") {
-        this.$emit('sorted-songs', this.songs)
+        this.$emit('sort-songs', this.songs)
         return
       }
 
@@ -98,7 +98,7 @@ export default {
         return 0
       })
 
-      this.$emit('sorted-songs', sortedSongs)
+      this.$emit('sort-songs', sortedSongs)
     }
   }
 }

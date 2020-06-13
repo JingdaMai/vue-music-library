@@ -44,13 +44,14 @@
           </div>
         </form>
         
-        <div>
+        <div class="row">
           <div class="dropdown is-hoverable">
             <div class="dropdown-trigger">
               <a
                 aria-haspopup="true"
                 aria-controls="dropdown-menu"
               >
+                Options
                 <FontAwesomeIcon icon="chevron-down" />
               </a>
             </div>
@@ -76,6 +77,7 @@
               title="Add songs"
               @click="addSongs(index)"
             >
+              Add
               <FontAwesomeIcon icon="plus" />
             </a>
 
@@ -84,6 +86,7 @@
               title="Disable adding songs"
               @click="addSongs(index)"
             >
+              Adding
               <FontAwesomeIcon icon="check-square" />
             </a>
           </template>

@@ -55,11 +55,14 @@ export default {
       this.songs = playlist.songs;
     },
     deleteSong(song) {
+      if (this.selectedPlaylist.songs === undefined) {
+        return;
+      }
       this.selectedPlaylist.songs.splice(this.selectedPlaylist.songs.indexOf(song), 1);
     }
   },
   beforeRouteUpdate(to, from, next) {
-    this.selectedPlaylist = to.params.slug;
+    this.selectedPlaylistSlug = to.params.slug;
     next();
   }
 

@@ -7,9 +7,12 @@
       />
     </div>
     <div class="column is-9">
+      <MusicSearch :songs="songs" @filtered-songs="filterSongs">
+
+      </MusicSearch>
       <table class="table is-fullwidth is-striped is-hoverable is-narrow">
         <MusicSort
-          :songs="songs"
+          :songs="filteredSongs"
           @sort-songs="sortSongs"
         />
         <PaginatedTableBody :items="sortedSongs">
@@ -30,12 +33,14 @@
 <script>
 import MusicData from '../assets/list.json';
 
+import MusicSearch from "./MusicSearch";
 import MusicSort from "./MusicSort";
 import PaginatedTableBody from "./PaginatedTableBody";
 import Playlists from "./Playlists";
 
 export default {
   components: {
+    MusicSearch,
     MusicSort,
     PaginatedTableBody,
     Playlists
@@ -44,10 +49,14 @@ export default {
     return {
       songs: MusicData,
       sortedSongs: MusicData,
+      filteredSongs: MusicData,
       activePlaylists: []
     }
   },
   methods: {
+    filterSongs(data) {
+      this.filteredSongs = data;
+    },
     sortSongs(data) {
       this.sortedSongs = data;
     },

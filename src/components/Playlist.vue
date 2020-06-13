@@ -12,7 +12,16 @@
           :songs="songs"
           @sort-songs="sortSongs"
         />
-        <PaginatedTableBody :items="sortedSongs" />
+        <PaginatedTableBody :items="sortedSongs">
+          <template #customColumn="songList">
+            <a
+              class="button is-small"
+              @click="deleteSong(songList.song)"
+            >
+              <FontAwesomeIcon icon="trash"></FontAwesomeIcon>
+            </a>
+          </template>
+        </PaginatedTableBody>
       </table>
     </div>
   </div>
@@ -45,11 +54,15 @@ export default {
       this.selectedPlaylist = playlist;
       this.songs = playlist.songs;
     },
-    beforeRouteUpdate(to, from, next) {
-      this.selectedPlaylist = to.params.slug;
-      next();
+    deleteSong(song) {
+      this.selectedPlaylist.songs.splice(this.selectedPlaylist.songs.indexOf(song), 1);
     }
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.selectedPlaylist = to.params.slug;
+    next();
   }
+
 }
 </script>
 

@@ -9,36 +9,86 @@
     </p>
 
     <template v-for="(playlist, index) in playlists">
-      <p
+      <div
         :key="playlist.slug"
         class="panel-block playlist-item"
       >
         <router-link
-          :to="`playlist/${playlist.slug}`"
+          v-if="!playlist.editing"
+          :to="`/playlist/${playlist.slug}`"
           class="panel-block"
         >
           <span class="panel-icon"><FontAwesomeIcon icon="book" /></span>
           {{ playlist.name }}
         </router-link>
-        
-        <template v-if="addingEnabled">
-          <a
-            v-if="!playlist.adding"
-            title="Add songs"
-            @click="addSongs(index)"
-          >
-            <FontAwesomeIcon icon="plus" />
-          </a>
 
-          <a
-            v-if="playlist.adding"
-            title="Disable adding songs"
-            @click="addSongs(index)"
-          >
-            <FontAwesomeIcon icon="check-square" />
-          </a>
-        </template>
-      </p>
+        <form
+          v-if="playlist.editing"
+          class="panel-block"
+          @submit.prevent="editPlaylist(index)"
+        >
+          <div class="filed has-addons">
+            <input
+              v-model="playlist.name"
+              type="text"
+              class="input"
+            >
+            <p class="control">
+              <button
+                type="submit"
+                class="button is-success"
+              >
+                <FontAwesomeIcon icon="check" />
+              </button>
+            </p>
+          </div>
+        </form>
+        
+        <div>
+          <div class="dropdown is-hoverable">
+            <div class="dropdown-trigger">
+              <a
+                aria-haspopup="true"
+                aria-controls="dropdown-menu"
+              >
+                <FontAwesomeIcon icon="chevron-down" />
+              </a>
+            </div>
+
+            <div class="dropdown-menu">
+              <div class="dropdown-content">
+                <a
+                  class="dropdown-item"
+                  title="Rename playlist"
+                  @click="editPlaylist(index)"
+                ><FontAwesomeIcon icon="edit" /> Rename</a>
+                <a
+                  class="dropdown-item"
+                  title="Rename playlist"
+                  @click="deletePlaylist(index)"
+                ><FontAwesomeIcon icon="trash-alt" /> Delete</a>
+              </div>
+            </div>
+          </div>
+          <template v-if="addingEnabled">
+            <a
+              v-if="!playlist.adding"
+              title="Add songs"
+              @click="addSongs(index)"
+            >
+              <FontAwesomeIcon icon="plus" />
+            </a>
+
+            <a
+              v-if="playlist.adding"
+              title="Disable adding songs"
+              @click="addSongs(index)"
+            >
+              <FontAwesomeIcon icon="check-square" />
+            </a>
+          </template>
+        </div>
+      </div>
     </template>
 
     <div class="panel-block">
@@ -104,6 +154,7 @@ export default {
           this.playlists = data;
           this.playlists.forEach((pl, index) => {
             this.playlists[index].adding = false;
+            this.playlists[index].editing = false;
           })
         }
       })
@@ -119,6 +170,7 @@ export default {
         name: this.newPlaylistName,
         slug: this.slugify(this.newPlaylistName),
         adding: false,
+        editing: false,
         songs: []
       });
 
@@ -127,6 +179,14 @@ export default {
     addSongs(index) {
       this.playlists[index].adding = !this.playlists[index].adding;
       this.$emit('set-active-playlists', this.playlists.filter(pl => pl.adding===true));
+    },
+    deletePlaylist(index) {
+      this.playlists.splice(index, 1);
+    },
+    editPlaylist(index) {
+      const playlist = this.playlists[index];
+      playlist.editing = !playlist.editing;
+      playlist.slug = this.slugify(playlist.name);
     },
     slugify(name) {
       return name.toString().toLowerCase().trim()

@@ -12,6 +12,7 @@
         </td>
         <td>{{ song.album }}</td>
         <td>{{ song.genre }}</td>
+        <td><slot name="customColumn"></slot></td>
       </tr>
     </template>
   </tbody>

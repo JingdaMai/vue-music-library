@@ -2,7 +2,7 @@
   <div class="columns">
     <div class="column is-3">
       <Playlists
-        addingEnabled
+        adding-enabled
         @set-active-playlists="setActivePlaylists"
       />
     </div>
@@ -15,7 +15,7 @@
         <PaginatedTableBody :items="sortedSongs">
           <template 
             v-if="activePlaylists.length > 0" 
-            v-slot:addTitle="songList"
+            #addTitle="songList"
           >
             <a @click="addSong(songList.song, $event.target)">
               <FontAwesomeIcon icon="plus" />
@@ -57,8 +57,8 @@ export default {
     addSong(song, e) {
       e.closest('tr').classList.add('flash');
       setTimeout(() => e.closest('tr').classList.remove('flash'), 1000);
-      this.activePlaylists.forEach((pl, index) => {
-        this.activePlaylists[index].songs.push(song);
+      this.activePlaylists.forEach((pl) => {
+        pl.songs.push(song);
       })
     }
   }
